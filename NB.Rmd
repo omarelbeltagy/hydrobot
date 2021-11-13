@@ -1,0 +1,52 @@
+Requiring dependencies
+```{r}
+library(tsintermittent)
+```
+Reading in the dataset
+```{r}
+dataset <- read.csv(file='./10.csv')
+```
+Dividing the sets into 3 sets that represent the following:
+first: Events up until 11:00
+second: Events up until 14:00
+third:  Events up until 17:00
+dataset (Already existing): Events up until 20:00
+```{r}
+first <- vector()
+second <- vector()
+third <- vector()
+for(i in seq(1,720, 24)){
+  first <- c(first,dataset[(i):(i+5), ] )
+  second <- c(second, dataset[(i):(i+11), ])
+  third <- c(third, dataset[(i):(i+17), ])
+}
+first
+```
+
+Transforming the dataframes to time series
+```{r}
+ts1 <- ts(data = first, frequency= 6)
+ts2 <- ts(data = second, frequency= 12)
+ts3 <- ts(data = third, frequency= 18)
+ts4 <- ts(data = dataset, frequency= 24)
+
+```
+Creating the croston Model and predicting
+```{r}
+#model_1 <- crost(ts1,type='sbj',h = 24)
+model_2 <- crost(ts2,type='sbj',h = 24)
+model_3 <- crost(ts3,type='sbj',h = 24)
+model_4 <- crost(ts4,type='sbj',h = 24)
+```
+Results
+```{r}
+#model_1$frc.out[1]
+model_2$frc.out[1]
+model_3$frc.out[1]
+model_4$frc.out[1]
+```
+```{r}
+r <- plumb("./plumber.R")
+r$run(port=8000)
+```
+
